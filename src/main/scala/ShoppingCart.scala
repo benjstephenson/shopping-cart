@@ -3,6 +3,9 @@
 object ShoppingCart {
 
   def checkout(products: List[Fruits.Value]): Double = {
-    products.map(Fruits.prices(_)).sum
+    Fruits.products.map { product =>
+      val count = products.count(_ == product.id)
+      product.checkout(count)
+    }.sum
   }
 }
