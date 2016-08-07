@@ -11,7 +11,7 @@ object Fruits extends Enumeration {
   case object Apple extends Fruit {
     val id = Fruits.apple
     val price = 0.60
-    def checkout(count: Int) = buyNGetNMinus1Free(price, 2)(count)
+    def checkout(count: Int) = bogof(price)(count)
   }
 
   case object Orange extends Fruit {
@@ -21,6 +21,12 @@ object Fruits extends Enumeration {
   }
 
   val products = Seq(Apple, Orange)
+
+  private def bogof(price: Double)(count: Int): Double = {
+      val remainder = count % 2
+      if (remainder == 0) count / 2 * price
+      else (count / 2 * price) + (remainder * price)
+  }
 
   private def buyNGetNMinus1Free(price: Double, n: Int)(count: Int): Double = {
     val remainder = count % n
@@ -46,9 +52,8 @@ object Fruits extends Enumeration {
       val freeItems = count / 3
       (count - freeItems) * price
     } else {
-      // remainder is how many extra items to add on top of the offer
-      val freeItems = count / 3
-      ((count - freeItems) * price) + remainder * price
+      val offerPrice = threeforTwo(price)(count - remainder)
+      offerPrice + (remainder * price)
     }
   }
 }
